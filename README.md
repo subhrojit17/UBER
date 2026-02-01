@@ -265,3 +265,162 @@ curl -X POST http://localhost:3000/users/login \
   "password": "strongPassword123"
 }'
 ```
+
+---
+
+## Endpoint
+
+**GET** `/users/profile`
+
+---
+
+## Description
+
+This endpoint returns the authenticated user's profile information. It is a protected route and requires a valid, non-blacklisted JWT token.
+
+---
+
+## Authentication
+
+The request must include a JWT token using **either** of the following methods:
+
+* **Authorization Header**
+
+  ```
+  Authorization: Bearer <JWT_TOKEN>
+  ```
+
+* **Cookie**
+
+  ```
+  token=<JWT_TOKEN>
+  ```
+
+---
+
+## Success Response
+
+### **200 OK**
+
+Returned when the token is valid and the user is authenticated.
+
+```json
+{
+  "_id": "64f...",
+  "fullname": {
+    "firstname": "John",
+    "lastname": "Doe"
+  },
+  "email": "john.doe@example.com",
+  "socketId": null
+}
+```
+
+---
+
+## Error Responses
+
+### **401 Unauthorized**
+
+Returned when:
+
+* No token is provided
+* Token is invalid or expired
+* Token is blacklisted
+
+```json
+{
+  "message": "Unauthorized"
+}
+```
+
+---
+
+## Notes
+
+* Tokens expire after **24 hours**.
+* Blacklisted tokens are stored temporarily to prevent reuse after logout.
+
+---
+
+## Endpoint
+
+**GET** `/users/logout`
+
+---
+
+## Description
+
+This endpoint logs out the authenticated user by invalidating the current JWT token. The token is cleared from cookies (if present) and added to a blacklist to prevent further use.
+
+---
+
+## Authentication
+
+Requires a valid JWT token via:
+
+* `Authorization: Bearer <JWT_TOKEN>` header, or
+* `token` cookie
+
+---
+
+## Success Response
+
+### **200 OK**
+
+Returned when the user is successfully logged out.
+
+```json
+{
+  "message": "Logged out"
+}
+```
+
+---
+
+## Error Responses
+
+### **401 Unauthorized**
+
+Returned when:
+
+* Token is missing
+* Token is already blacklisted
+
+```json
+{
+  "message": "Unauthorized"
+}
+```
+
+---
+
+## Token Blacklisting Strategy
+
+* On logout, the active JWT token is stored in a **BlacklistedToken** collection.
+* Blacklisted tokens automatically expire after **24 hours** using MongoDB TTL indexing.
+* Every protected route checks:
+
+  1. Token existence
+  2. Token validity
+  3. Token blacklist status
+
+This ensures stateless JWT authentication while allowing secure logout behavior.
+
+---
+
+## Example cURL Requests
+
+### Get Profile
+
+```bash
+curl -X GET http://localhost:3000/users/profile \
+-H "Authorization: Bearer <JWT_TOKEN>"
+```
+
+### Logout
+
+```bash
+curl -X GET http://localhost:3000/users/logout \
+-H "Authorization: Bearer <JWT_TOKEN>"
+```
