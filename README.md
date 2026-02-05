@@ -424,3 +424,125 @@ curl -X GET http://localhost:3000/users/profile \
 curl -X GET http://localhost:3000/users/logout \
 -H "Authorization: Bearer <JWT_TOKEN>"
 ```
+
+---
+
+## Endpoint
+
+**POST** `/captains/register`
+
+---
+
+## Description
+
+This endpoint registers a new captain. It validates the request body, hashes the password, creates a captain record, and returns a JWT token.
+
+---
+
+## Request Headers
+
+```
+Content-Type: application/json
+```
+
+---
+
+## Request Body
+
+```json
+{
+  "fullname": {
+    "firstname": "Alex",
+    "lastname": "Rider"
+  },
+  "email": "alex.rider@example.com",
+  "password": "strongPassword123",
+  "vehicle": {
+    "color": "Black",
+    "plate": "AB12XYZ",
+    "capacity": 4,
+    "vehicleType": "car"
+  }
+}
+```
+
+### Field Requirements
+
+| Field                 | Type   | Required | Validation Rules |
+| --------------------- | ------ | -------- | ---------------- |
+| fullname.firstname    | string | ✅ Yes   | Minimum 3 characters |
+| fullname.lastname     | string | ✅ Yes   | Minimum 3 characters |
+| email                 | string | ✅ Yes   | Must be a valid email format |
+| password              | string | ✅ Yes   | Minimum 8 characters |
+| vehicle.color         | string | ✅ Yes   | Minimum 3 characters |
+| vehicle.plate         | string | ✅ Yes   | Minimum 3 characters |
+| vehicle.capacity      | number | ✅ Yes   | Integer, minimum 1 |
+| vehicle.vehicleType   | string | ✅ Yes   | One of: car, motorcycle, shuttle, auto |
+
+---
+
+## Success Response
+
+### **201 Created**
+
+```json
+{
+  "token": "<JWT_TOKEN>",
+  "captain": {
+    "_id": "64f...",
+    "fullname": {
+      "firstname": "Alex",
+      "lastname": "Rider"
+    },
+    "email": "alex.rider@example.com",
+    "status": "inactive",
+    "vehicle": {
+      "color": "Black",
+      "plate": "AB12XYZ",
+      "capacity": 4,
+      "vehicleType": "car"
+    }
+  }
+}
+```
+
+---
+
+## Error Responses
+
+### **400 Bad Request**
+
+Returned when validation fails or the captain already exists.
+
+```json
+{
+  "errors": [
+    {
+      "msg": "First name must be atleast 3 characters long.",
+      "param": "fullname.firstname",
+      "location": "body"
+    }
+  ]
+}
+```
+
+```json
+{
+  "message": "Captain already exists"
+}
+```
+
+---
+
+## Example cURL Request
+
+```bash
+curl -X POST http://localhost:3000/captains/register \
+  -H "Content-Type: application/json" \
+  -d '{
+    "fullname": { "firstname": "Alex", "lastname": "Rider" },
+    "email": "alex.rider@example.com",
+    "password": "strongPassword123",
+    "vehicle": { "color": "Black", "plate": "AB12XYZ", "capacity": 4, "vehicleType": "car" }
+  }'
+```
