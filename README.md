@@ -546,3 +546,241 @@ curl -X POST http://localhost:3000/captains/register \
     "vehicle": { "color": "Black", "plate": "AB12XYZ", "capacity": 4, "vehicleType": "car" }
   }'
 ```
+
+---
+
+## Endpoint
+
+**POST** `/captains/login`
+
+---
+
+## Description
+
+This endpoint authenticates an existing captain. It validates the credentials and returns a JWT token if valid.
+
+---
+
+## Request Headers
+
+```
+Content-Type: application/json
+```
+
+---
+
+## Request Body
+
+```json
+{
+  "email": "alex.rider@example.com",
+  "password": "strongPassword123"
+}
+```
+
+### Field Requirements
+
+| Field    | Type   | Required | Validation Rules |
+| -------- | ------ | -------- | ---------------- |
+| email    | string | Yes      | Must be a valid email format |
+| password | string | Yes      | Minimum 8 characters |
+
+---
+
+## Success Response
+
+### **200 OK**
+
+```json
+{
+  "token": "<JWT_TOKEN>",
+  "captain": {
+    "_id": "64f...",
+    "fullname": {
+      "firstname": "Alex",
+      "lastname": "Rider"
+    },
+    "email": "alex.rider@example.com",
+    "status": "inactive"
+  }
+}
+```
+
+---
+
+## Error Responses
+
+### **400 Bad Request**
+
+Returned when request validation fails.
+
+```json
+{
+  "errors": [
+    {
+      "msg": "Please use a valid email address.",
+      "param": "email",
+      "location": "body"
+    }
+  ]
+}
+```
+
+### **401 Unauthorized**
+
+Returned when credentials are invalid.
+
+```json
+{
+  "error": "Invalid email or password."
+}
+```
+
+---
+
+## Example cURL Request
+
+```bash
+curl -X POST http://localhost:3000/captains/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "alex.rider@example.com",
+    "password": "strongPassword123"
+  }'
+```
+
+---
+
+## Endpoint
+
+**GET** `/captains/profile`
+
+---
+
+## Description
+
+This endpoint returns the authenticated captain profile. It is a protected route and requires a valid, non-blacklisted JWT token.
+
+---
+
+## Authentication
+
+The request must include a JWT token using either of the following methods:
+
+* **Authorization Header**
+
+  ```
+  Authorization: Bearer <JWT_TOKEN>
+  ```
+
+* **Cookie**
+
+  ```
+  token=<JWT_TOKEN>
+  ```
+
+---
+
+## Success Response
+
+### **200 OK**
+
+```json
+{
+  "captain": {
+    "_id": "64f...",
+    "fullname": {
+      "firstname": "Alex",
+      "lastname": "Rider"
+    },
+    "email": "alex.rider@example.com",
+    "status": "inactive"
+  }
+}
+```
+
+---
+
+## Error Responses
+
+### **401 Unauthorized**
+
+Returned when:
+
+* No token is provided
+* Token is invalid or expired
+* Token is blacklisted
+
+```json
+{
+  "message": "Unauthorized"
+}
+```
+
+---
+
+## Example cURL Request
+
+```bash
+curl -X GET http://localhost:3000/captains/profile \
+  -H "Authorization: Bearer <JWT_TOKEN>"
+```
+
+---
+
+## Endpoint
+
+**GET** `/captains/logout`
+
+---
+
+## Description
+
+This endpoint logs out the authenticated captain by invalidating the current JWT token. The token is cleared from cookies (if present) and added to a blacklist.
+
+---
+
+## Authentication
+
+Requires a valid JWT token via:
+
+* `Authorization: Bearer <JWT_TOKEN>` header, or
+* `token` cookie
+
+---
+
+## Success Response
+
+### **200 OK**
+
+```json
+{
+  "message": "Logged out successfully"
+}
+```
+
+---
+
+## Error Responses
+
+### **401 Unauthorized**
+
+Returned when:
+
+* Token is missing
+* Token is already blacklisted
+
+```json
+{
+  "message": "Unauthorized"
+}
+```
+
+---
+
+## Example cURL Request
+
+```bash
+curl -X GET http://localhost:3000/captains/logout \
+  -H "Authorization: Bearer <JWT_TOKEN>"
+```
