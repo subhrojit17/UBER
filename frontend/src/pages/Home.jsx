@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 const Home = () => {
   return (
     <div>
-      <div className="bg-cover bg-center bg-[url(https://plus.unsplash.com/premium_photo-1737083053903-b7c9a38fc496?q=80&w=627&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)] h-screen pt-8 w-full bg-red-400 flex justify-between flex-col">
+      <div className="bg-cover bg-center bg-[url(https://images.unsplash.com/photo-1602773040364-522556233e30?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)] h-screen pt-8 w-full flex justify-between flex-col">
         <img
           className="w-16 ml-8"
           src="https://freelogopng.com/images/all_img/1659768779uber-logo-white.png"
