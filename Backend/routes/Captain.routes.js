@@ -2,7 +2,14 @@ const express = require("express");
 const router = express.Router();
 const { body } = require("express-validator");
 const captainController = require("../controllers/Captain.controller");
+const captainModel = require("../models/Captain.model");
 const authMiddleware = require("../middlewares/Auth.middleware");
+
+router.get("/vehicle-types", (req, res) => {
+  const vehicleTypes =
+    captainModel.schema.path("vehicle.vehicleType").enumValues || [];
+  res.status(200).json({ vehicleTypes });
+});
 
 router.post(
   "/register",
@@ -27,9 +34,9 @@ router.post(
       .isInt({ min: 1 })
       .withMessage("Capacity must be atleast 1."),
     body("vehicle.vehicleType")
-      .isIn(["car", "motorcycle", "shuttle", "auto"])
+      .isIn(captainModel.schema.path("vehicle.vehicleType").enumValues || [])
       .withMessage(
-        "Vehicle type must be either car, motorcycle, shuttle or auto.",
+        "Vehicle type must be either car, two-wheeler, shuttle or auto.",
       ),
   ],
   captainController.registerCaptain,
