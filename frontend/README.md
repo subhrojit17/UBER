@@ -1,70 +1,46 @@
 # UBER Frontend
 
-A React + Vite frontend for the UBER clone. The current build includes the landing page plus user/captain auth screens with form state handling (UI only, no API wiring yet).
+React + Vite client for user and captain authentication flows.
 
 ## Tech Stack
 - React 19
 - Vite 7
-- React Router 7
+- React Router
+- Axios
 - Tailwind CSS 4
 
-## Project Structure
-```
-Frontend/
-|-- public/
-|-- src/
-|   |-- assets/
-|   |-- pages/
-|   |   |-- Home.jsx
-|   |   |-- UserLogin.jsx
-|   |   |-- UserSignup.jsx
-|   |   |-- CaptainLogin.jsx
-|   |   |-- CaptainSignup.jsx
-|   |-- App.jsx
-|   |-- App.css
-|   |-- main.jsx
-|   |-- index.css
-|-- index.html
-|-- package.json
-|-- vite.config.js
+## Environment
+Create `frontend/.env`:
+
+```env
+VITE_BASE_URL=http://localhost:4000/
 ```
 
-## Getting Started
+`VITE_BASE_URL` must include a trailing `/`.
 
-Install dependencies:
+## Install and Run
 ```bash
 npm install
-```
-
-Run the dev server:
-```bash
 npm run dev
 ```
 
-Build for production:
-```bash
-npm run build
-```
+## Current Routes
+Defined in `frontend/src/App.jsx`:
 
-Preview production build:
-```bash
-npm run preview
-```
+- `/` -> `Start`
+- `/user-login` -> `UserLogin`
+- `/user-signup` -> `UserSignup`
+- `/captain-login` -> `CaptainLogin`
+- `/captain-signup` -> `CaptainSignup`
+- `/home` -> `UserProtectedWrapper` + `Home`
+- `/captain-home` -> `CaptainProtectedWrapper` + `CaptainHome`
+- `/user-logout` -> `UserProtectedWrapper` + `UserLogout`
+- `/captain-logout` -> `CaptainProtectedWrapper` + `UserLogout`
 
-## Routes
-Defined in `src/App.jsx`:
-- `/` renders `Home`
-- `/user-login` renders `UserLogin`
-- `/user-signup` renders `UserSignup`
-- `/captain-login` renders `CaptainLogin`
-- `/captain-signup` renders `CaptainSignup`
-
-## Pages Implemented
-- **Home**: Full-screen hero with Uber branding, background image, and a “Continue” CTA that routes to user login.
-- **User Login**: Controlled email/password inputs, submit handler, link to user signup, and CTA to captain login.
-- **User Signup**: Controlled first/last name + email/password inputs, submit handler, and link to user login.
-- **Captain Login**: Controlled email/password inputs, submit handler, link to captain signup, and CTA to user login.
-- **Captain Signup**: Controlled first/last name + email/password inputs, submit handler, and link to captain login.
-
-## Styling
-Tailwind CSS utility classes are used throughout pages (see `src/pages/Home.jsx` and `src/pages/UserLogin.jsx`).
+## Auth and API Integration
+- `UserLogin` and `CaptainLogin` call backend login endpoints and store JWT in `localStorage` as `token`.
+- `UserSignup` and `CaptainSignup` call backend register endpoints.
+- `CaptainSignup` fetches vehicle types from `GET /captains/vehicle-types`.
+- `UserProtectedWrapper` verifies token with `GET /users/profile`.
+- `CaptainProtectedWrapper` verifies token with `GET /captains/profile`.
+- On profile fetch failure, wrappers clear the token and redirect to the related login page.
