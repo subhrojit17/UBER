@@ -44,3 +44,12 @@ Defined in `frontend/src/App.jsx`:
 - `UserProtectedWrapper` verifies token with `GET /users/profile`.
 - `CaptainProtectedWrapper` verifies token with `GET /captains/profile`.
 - On profile fetch failure, wrappers clear the token and redirect to the related login page.
+
+## Ride Flow (Home)
+- `Home` now drives a 3-step bottom-sheet flow using GSAP translate animations:
+  - location search panel
+  - vehicle selection panel
+  - ride confirmation panel
+- Selecting a location in `LocationSearchPanel` closes the location sheet and opens `VehiclePanel`.
+- Selecting a vehicle in `VehiclePanel` opens `ConfirmedRide` and closes the vehicle panel.
+- Vehicle cards use Tailwind hover-only borders (`border-transparent` + `hover:border-black`) so borders appear only on hover.

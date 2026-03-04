@@ -2,13 +2,20 @@ import React, { useRef, useState } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import "remixicon/fonts/remixicon.css";
+import LocationSearchPanel from "../components/LocationSearchPanel";
+import VehiclePanel from "../components/VehiclePanel";
+import ConfirmedRide from "../components/ConfirmedRide";
 
 const Home = () => {
   const [pickup, setPickup] = useState("");
   const [destination, setDestination] = useState("");
   const [panelOpen, setPanelOpen] = useState(false);
+  const vehiclePanelRef = useRef(null);
+  const confirmedRidePanelRef = useRef(null);
   const panelRef = useRef(null);
   const panelCloseRef = useRef(null);
+  const [vehiclePanelOpen, setVehiclePanel] = useState(false);
+  const [confirmedRidePanel, setConfirmedRidePanel] = useState(false);
 
   function submitHandler(e) {
     e.preventDefault();
@@ -19,11 +26,13 @@ const Home = () => {
       if (panelOpen) {
         gsap.to(panelRef.current, {
           height: "70%",
+          padding: 24,
         });
         gsap.to(panelCloseRef.current, { opacity: 1 });
       } else {
         gsap.to(panelRef.current, {
           height: "0%",
+          padding: 0,
         });
         gsap.to(panelCloseRef.current, { opacity: 0 });
       }
@@ -31,8 +40,38 @@ const Home = () => {
     [panelOpen],
   );
 
+  useGSAP(
+    function () {
+      if (vehiclePanelOpen) {
+        gsap.to(vehiclePanelRef.current, {
+          transform: "translateY(0)",
+        });
+      } else {
+        gsap.to(vehiclePanelRef.current, {
+          transform: "translateY(100%)",
+        });
+      }
+    },
+    [vehiclePanelOpen],
+  );
+
+  useGSAP(
+    function () {
+      if (confirmedRidePanel) {
+        gsap.to(confirmedRidePanelRef.current, {
+          transform: "translateY(0)",
+        });
+      } else {
+        gsap.to(confirmedRidePanelRef.current, {
+          transform: "translateY(100%)",
+        });
+      }
+    },
+    [confirmedRidePanel],
+  );
+
   return (
-    <div className="h-screen relative">
+    <div className="h-screen relative overflow-hidden">
       <img
         className="w-16 absolute left-5 top-5"
         src="https://www.pngall.com/wp-content/uploads/13/Uber-Logo-PNG-File.png"
@@ -52,7 +91,7 @@ const Home = () => {
             onClick={() => {
               setPanelOpen(false);
             }}
-            className="absolute right-6 top-6 text-2xl"
+            className="absolute right-6 top-6 text-2xl "
           >
             <i
               ref={panelCloseRef}
@@ -92,7 +131,27 @@ const Home = () => {
             />
           </form>
         </div>
-        <div ref={panelRef} className="bg-red-500 h-0"></div>
+        <div ref={panelRef} className="bg-white h-0">
+          <LocationSearchPanel
+            setPanelOpen={setPanelOpen}
+            setVehiclePanel={setVehiclePanel}
+          />
+        </div>
+      </div>
+      <div
+        ref={vehiclePanelRef}
+        className="fixed w-full z-10 bottom-0 translate-y-full bg-white py-10 px-3 pt-12"
+      >
+        <VehiclePanel
+          setConfirmedRidePanel={setConfirmedRidePanel}
+          setVehiclePanel={setVehiclePanel}
+        />
+      </div>
+      <div
+        ref={confirmedRidePanelRef}
+        className="fixed w-full z-10 bottom-0 translate-y-full bg-white py-6 px-3 pt-12"
+      >
+        <ConfirmedRide setConfirmedRidePanel={setConfirmedRidePanel} />
       </div>
     </div>
   );
