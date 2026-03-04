@@ -19,7 +19,7 @@ const ConfirmedRide = (props) => {
           alt=""
         />
         <div className="w-full mt-5">
-          <div className="flex items-center gap-5 p-3 border-b-[1px] border-gray-400">
+          <div className="flex items-center gap-5 p-3 border-b border-gray-400">
             <i className="text-lg ri-map-pin-fill"></i>
             <div>
               <h3 className="text-lg font-medium">562/11/A </h3>
@@ -28,7 +28,7 @@ const ConfirmedRide = (props) => {
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-5 p-3 border-b-[1px] border-gray-400">
+          <div className="flex items-center gap-5 p-3 border-b border-gray-400">
             <i className="text-sm ri-square-fill"></i>
             <div>
               <h3 className="text-lg font-medium">562/11/A </h3>
