@@ -1,6 +1,6 @@
 import React from "react";
 
-const ConfirmedRide = (props) => {
+const ConfirmRide = (props) => {
   return (
     <div>
       <h5
@@ -53,4 +53,4 @@ const ConfirmedRide = (props) => {
   );
 };
 
-export default ConfirmedRide;
+export default ConfirmRide;
